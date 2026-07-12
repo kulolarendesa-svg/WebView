@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Santri AMOLED</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    
+    <link id="manifest-placeholder" rel="manifest">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-amoled: #000000;
+            --surface-dark: #121212;
+            --surface-card: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-cyan: #03dac6;
+            --accent-blue: #3700b3;
+            --btn-blue: #bb86fc;
+            --color-h: #00e676;
+            --color-a: #ff5252;
+            --color-is: #ffd600;
+            --text-white-bright: #ffffff;
+            --black-amoled: #000000; /* Warna hitam amoled murni */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-amoled);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 16px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding-bottom: 40px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #222;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--btn-blue);
+            margin: 0 0 4px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .android-card {
+            background-color: var(--surface-dark);
+            border: 1px solid #222;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            background-color: var(--surface-card);
+            padding: 16px 20px;
+            font-weight: 500;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2b2b2b;
+            user-select: none;
+        }
+
+        .card-header:active {
+            background-color: #2a2a2a;
+        }
+
+        .card-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .card-content.show {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .android-input {
+            width: 100%;
+            padding: 14px 16px;
+            box-sizing: border-box;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background-color: #080808;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .android-input:focus {
+            outline: none;
+            border-color: var(--btn-blue);
+        }
+
+        .custom-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #121212;
+            border: 2px solid #333;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 999;
+            display: none;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.8);
+        }
+
+        .custom-dropdown-item {
+            padding: 12px 16px;
+            color: var(--text-primary);
+            cursor: pointer;
+            border-bottom: 1px solid #222;
+            font-size: 15px;
+        }
+
+        .custom-dropdown-item:hover, .custom-dropdown-item:active {
+            background-color: var(--surface-card);
+            color: var(--accent-cyan);
+        }
+
+        .error-msg {
+            color: var(--color-a);
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .android-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            transition: filter 0.2s;
+        }
+
+        .android-btn:active {
+            filter: brightness(0.8);
+        }
+
+        .btn-fill-blue { background-color: var(--btn-blue); color: #000; }
+        .btn-outline-red { background-color: transparent; border: 2px solid var(--color-a); color: var(--color-a); }
+        .btn-giant-cyan { background-color: var(--accent-cyan); color: #000; width: 100%; margin-bottom: 16px; font-size: 15px;}
+        .btn-backup { background-color: #333333; color: var(--text-primary); font-size: 12px; padding: 10px;}
+
+        .android-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .android-table th {
+            text-align: left;
+            padding: 12px 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            border-bottom: 2px solid #222;
+        }
+
+        .android-table td {
+            padding: 14px 8px;
+            border-bottom: 1px solid #1f1f1f;
+            font-size: 15px;
+            vertical-align: middle;
+        }
+
+        .santri-name { font-weight: 500; color: var(--text-primary); }
+        .santri-address { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+        .presence-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .chip-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            background: transparent;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .chip-btn:disabled {
+            opacity: 0.15;
+            cursor: not-allowed;
+            border-color: #222;
+            color: #555;
+        }
+
+        .chip-btn.active-h { background-color: rgba(0, 230, 118, 0.2); border-color: var(--color-h); color: var(--color-h); opacity: 1 !important;}
+        .chip-btn.active-a { background-color: rgba(255, 82, 82, 0.2); border-color: var(--color-a); color: var(--color-a); opacity: 1 !important;}
+        .chip-btn.active-is { background-color: rgba(255, 214, 0, 0.2); border-color: var(--color-is); color: var(--color-is); opacity: 1 !important;}
+
+        .list-item-card {
+            background: #161616;
+            border: 1px solid #252525;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-item-info span {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .action-mini-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-mini {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .btn-mini-panggil { background-color: var(--accent-cyan); color: #000; }
+        .btn-mini-tidak { background-color: transparent; border: 1px solid var(--color-a); color: var(--color-a); }
+
+        .android-list {
+            padding-left: 20px;
+            margin: 0;
+        }
+        .android-list li {
+            padding: 6px 0;
+            font-size: 14px;
+        }
+
+        .text-cyan { color: var(--accent-cyan); }
+        .text-red { color: var(--color-a); }
+        
+        .arrow-icon {
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+        .rotated {
+            transform: rotate(-180deg);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h1>ABSENSI SANTRI</h1>
+        <p>AMOLED Dark Edition • Keadilan Acakan</p>
+    </div>
+
+    <!-- SECTION 1: DATA SANTRI -->
+    <div class="android-card">
+        <div class="card-header" onclick="toggleSection('sec1')">
+            <span>DATA SANTRI</span>
+            <span id="icon-sec1" class="arrow-icon">▲</span>
+        </div>
+        <div id="sec1" class="card-content">
+            <div class="form-group">
+                <label for="inputNama">NAMA SANTRI</label>
+                <input type="text" id="inputNama" class="android-input" placeholder="Ketik nama lengkap..." oninput="validateNama(this)" autocomplete="off">
+                <div id="dropdownKostum" class="custom-dropdown"></div>
+                <div id="errorNama" class="error-msg">⚠ Nama sudah ada (Ketik alamat baru lalu klik Simpan untuk memperbarui).</div>
+            </div>
+            <div class="form-group">
+                <label for="inputAlamat">ALAMAT / ASAL</label>
+                <input type="text" id="inputAlamat" class="android-input" placeholder="Ketik kota/alamat...">
+            </div>
+            <div class="btn-row">
+                <button class="android-btn btn-fill-blue" onclick="simpanSantri()">Simpan</button>
+                <button class="android-btn btn-outline-red" onclick="hapusSantri()">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: DAFTAR ABSENSI -->
+    <div class="android-card">
+        <div class="card-header" onclick="toggleSection('sec2')">
+            <span>PRESENSI HARI INI <small id="tgl-info" style="color:var(--accent-cyan); font-size:11px;"></small></span>
+            <span id="icon-sec2" class="arrow-icon">▲</span>
+        </div>
+        <div id="sec2" class="card-content" style="padding: 10px 14px;">
+            <table class="android-table" id="tabelAbsensi">
+                <thead>
+                    <tr>
+                        <th>Santri</th>
+                        <th style="text-align: right; padding-right: 25px;">Opsi Absen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Diisi otomatis oleh JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SECTION 3: ACAK PANGGILAN -->
+    <div class="android-card">
+        <div class="card-header" onclick="toggleSection('sec3')">
+            <span>ACAKAN PANGGILAN HARI INI</span>
+            <span id="icon-sec3" class="arrow-icon">▲</span>
+        </div>
+        <div id="sec3" class="card-content">
+            <button class="android-btn btn-giant-cyan" onclick="acakSantri()">ACAK 3 SANTRI HARI INI</button>
+            <div id="hasilAcak">
+                <!-- Diisi otomatis oleh JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4: STATISTIK, RIWAYAT, & BACKUP -->
+    <div class="android-card">
+        <div class="card-header" onclick="toggleSection('sec4')">
+            <span>RIWAYAT ALPHA & TOTAL STATISTIK</span>
+            <span id="icon-sec4" class="arrow-icon">▲</span>
+        </div>
+        <div id="sec4" class="card-content">
+            <h4 style="margin: 0 0 10px 0; font-size: 14px; color: var(--color-a); letter-spacing: 0.5px;">ALPHA HARI INI:</h4>
+            <ul id="listAlphaHariIni" class="android-list" style="margin-bottom: 24px;"></ul>
+            
+            <h4 style="margin: 0 0 10px 0; font-size: 14px; color: var(--accent-cyan); letter-spacing: 0.5px;">STATISTIK KUMULATIF:</h4>
+            <table class="android-table" id="tabelStatistik" style="margin-bottom: 24px;">
+                <thead>
+                    <tr>
+                        <th>Santri</th>
+                        <th style="text-align: center;">Alpha</th>
+                        <th style="text-align: center;">Panggil</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Diisi otomatis oleh JS -->
+                </tbody>
+            </table>
+
+            <h4 style="margin: 0 0 10px 0; font-size: 14px; color: var(--btn-blue); letter-spacing: 0.5px;">MANAJEMEN DATA:</h4>
+            <div class="btn-row">
+                <button class="android-btn btn-backup" onclick="eksporData()">💾 Ekspor JSON</button>
+                <button class="android-btn btn-backup" onclick="picuImporData()">📂 Impor JSON</button>
+            </div>
+            <input type="file" id="fileImpor" accept=".json" style="display: none;" onchange="imporData(this)">
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- PWA INTEGRASI ---
+    const manifest = {
+        "short_name": "Absensi",
+        "name": "Absensi Santri AMOLED",
+        "start_url": window.location.href,
+        "background_color": "#000000",
+        "theme_color": "#000000",
+        "display": "standalone",
+        "orientation": "portrait"
+    };
+    const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+    document.getElementById('manifest-placeholder').setAttribute('href', URL.createObjectURL(manifestBlob));
+
+    if ('serviceWorker' in navigator) {
+        const swCode = `self.addEventListener('fetch', function(e) {});`;
+        const swBlob = new Blob([swCode], {type: 'application/javascript'});
+        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(err => console.log(err));
+    }
+
+    // --- LAYANAN INDEXEDDB ---
+    let db;
+    const dbRequest = indexedDB.open("AbsensiSantriAmolDB", 1);
+
+    dbRequest.onupgradeneeded = function(e) {
+        db = e.target.result;
+        if (!db.objectStoreNames.contains("santri")) {
+            db.createObjectStore("santri", { keyPath: "nama" });
+        }
+    };
+
+    dbRequest.onsuccess = function(e) {
+        db = e.target.result;
+        const dataAcakLokal = localStorage.getItem("hasil_acak_hari_ini");
+        if(dataAcakLokal) {
+            hasilAcakHariIni = JSON.parse(dataAcakLokal);
+        }
+        cekDanResetHarian();
+    };
+
+    // --- STATE MANAGEMENT ---
+    let daftarSantri = [];
+    let hasilAcakHariIni = [];
+
+    function cekDanResetHarian() {
+        const tglHariIni = new Date().toDateString();
+        const tglTerakhir = localStorage.getItem("last_absen_date");
+        
+        document.getElementById("tgl-info").innerText = `(${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'short'})})`;
+
+        const transaction = db.transaction(["santri"], "readwrite");
+        const store = transaction.objectStore("santri");
+        const request = store.getAll();
+
+        request.onsuccess = function() {
+            daftarSantri = request.result;
+
+            if (tglTerakhir !== tglHariIni) {
+                let sisaUpdate = daftarSantri.length;
+                if (sisaUpdate === 0) {
+                    loadData();
+                    localStorage.setItem("last_absen_date", tglHariIni);
+                    return;
+                }
+                
+                daftarSantri.forEach(santri => {
+                    santri.statusHariIni = "Belum";
+                    const reqUpdate = store.put(santri);
+                    reqUpdate.onsuccess = () => {
+                        sisaUpdate--;
+                        if (sisaUpdate === 0) {
+                            localStorage.setItem("last_absen_date", tglHariIni);
+                            loadData();
+                        }
+                    };
+                });
+            } else {
+                loadData();
+            }
+        };
+    }
+
+    function loadData() {
+        const transaction = db.transaction(["santri"], "readonly");
+        const store = transaction.objectStore("santri");
+        const request = store.getAll();
+
+        request.onsuccess = function() {
+            daftarSantri = request.result;
+            renderAll();
+        };
+    }
+
+    function saveToDB(santriObj, callback) {
+        const transaction = db.transaction(["santri"], "readwrite");
+        const store = transaction.objectStore("santri");
+        const request = store.put(santriObj);
+        request.onsuccess = () => { loadData(); if(callback) callback(); };
+    }
+
+    function deleteFromDB(nama) {
+        const transaction = db.transaction(["santri"], "readwrite");
+        const store = transaction.objectStore("santri");
+        const request = store.delete(nama);
+        request.onsuccess = () => { loadData(); };
+    }
+
+    // --- ENGINE & LOGIKA ---
+
+    function validateNama(input) {
+        input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+        const namaInput = input.value.trim();
+        const namaInputLower = namaInput.toLowerCase();
+        
+        const dropdown = document.getElementById("dropdownKostum");
+        dropdown.innerHTML = ""; 
+
+        if (namaInput.length > 0) {
+            const filteredSantri = daftarSantri.filter(santri => {
+                const namaDbLower = santri.nama.toLowerCase();
+                return namaDbLower.substring(0, namaInputLower.length) === namaInputLower;
+            });
+            
+            if(filteredSantri.length > 0) {
+                dropdown.style.display = "block";
+                filteredSantri.forEach(santri => {
+                    const item = document.createElement("div");
+                    item.className = "custom-dropdown-item";
+                    item.innerText = santri.nama;
+                    item.onclick = function() {
+                        document.getElementById("inputNama").value = santri.nama;
+                        document.getElementById("inputAlamat").value = santri.alamat;
+                        document.getElementById("errorNama").style.display = "block";
+                        dropdown.style.display = "none";
+                    };
+                    dropdown.appendChild(item);
+                });
+            } else {
+                dropdown.style.display = "none";
+            }
+        } else {
+            dropdown.style.display = "none";
+        }
+
+        const matchSantri = daftarSantri.find(s => s.nama.toLowerCase() === namaInputLower);
+        if (matchSantri) {
+            document.getElementById("inputAlamat").value = matchSantri.alamat;
+            document.getElementById("errorNama").style.display = "block";
+        } else {
+            document.getElementById("errorNama").style.display = "none";
+        }
+    }
+
+    document.addEventListener("click", function(e) {
+        const dropdown = document.getElementById("dropdownKostum");
+        const inputNama = document.getElementById("inputNama");
+        if (e.target !== inputNama && e.target !== dropdown) {
+            dropdown.style.display = "none";
+        }
+    });
+
+    function toggleSection(id) {
+        const targetContent = document.getElementById(id);
+        const targetIcon = document.getElementById("icon-" + id);
+        const isAlreadyOpen = targetContent.classList.contains("show");
+
+        const allContents = document.querySelectorAll('.card-content');
+        const allIcons = document.querySelectorAll('.arrow-icon');
+
+        allContents.forEach(content => content.classList.remove('show'));
+        allIcons.forEach(icon => icon.classList.remove('rotated'));
+
+        if (!isAlreadyOpen) {
+            targetContent.classList.add('show');
+            targetIcon.classList.add('rotated');
+        }
+    }
+
+    function simpanSantri() {
+        const nama = document.getElementById("inputNama").value.trim();
+        const alamat = document.getElementById("inputAlamat").value.trim();
+
+        if (!nama || !alamat) return;
+
+        const dataLama = daftarSantri.find(s => s.nama.toLowerCase() === nama.toLowerCase());
+
+        const dataBaru = {
+            nama: dataLama ? dataLama.nama : nama,
+            alamat: alamat,
+            statusHariIni: dataLama ? dataLama.statusHariIni : "Belum",
+            masukAntrianHariIni: dataLama ? dataLama.masukAntrianHariIni : false,
+            totalAlpha: dataLama ? dataLama.totalAlpha : 0,
+            totalDipanggil: dataLama ? dataLama.totalDipanggil : 0
+        };
+
+        saveToDB(dataBaru, () => {
+            document.getElementById("inputNama").value = "";
+            document.getElementById("inputAlamat").value = "";
+            document.getElementById("errorNama").style.display = "none";
+            document.getElementById("dropdownKostum").innerHTML = ""; 
+        });
+    }
+
+    function hapusSantri() {
+        const nama = document.getElementById("inputNama").value.trim();
+        if (!nama) return;
+        if (confirm(`Hapus data ${nama}?`)) {
+            deleteFromDB(nama);
+            document.getElementById("inputNama").value = "";
+            document.getElementById("inputAlamat").value = "";
+            document.getElementById("errorNama").style.display = "none";
+            document.getElementById("dropdownKostum").innerHTML = "";
+        }
+    }
+
+    // --- KEHADIRAN & ACAKAN ---
+    function setKehadiran(nama, status) {
+        const santri = daftarSantri.find(s => s.nama === nama);
+        if (!santri || santri.statusHariIni !== "Belum") return;
+
+        if (status === 'A') {
+            santri.totalAlpha += 1;
+        }
+
+        santri.statusHariIni = status;
+        santri.masukAntrianHariIni = (status === 'H');
+
+        saveToDB(santri);
+    }
+
+    function acakSantri() {
+        const kandidat = daftarSantri.filter(s => s.masukAntrianHariIni && s.statusHariIni === 'H');
+        if (kandidat.length === 0) {
+            alert("Tidak ada antrian santri berstatus HADIR (H) saat ini.");
+            return;
+        }
+
+        let urutPanggilan = [...kandidat].sort((a, b) => a.totalDipanggil - b.totalDipanggil);
+        let minimalPanggil = urutPanggilan[0].totalDipanggil;
+        
+        let poolPrioritas = urutPanggilan.filter(s => s.totalDipanggil === minimalPanggil);
+        
+        if (poolPrioritas.length < 3) {
+            poolPrioritas = urutPanggilan;
+        }
+
+        poolPrioritas.sort(() => Math.random() - 0.5);
+        hasilAcakHariIni = poolPrioritas.slice(0, 3);
+        
+        localStorage.setItem("hasil_acak_hari_ini", JSON.stringify(hasilAcakHariIni));
+        renderSection3();
+        renderSection2();
+    }
+
+    function panggilSantri(nama) {
+        const santri = daftarSantri.find(s => s.nama === nama);
+        if (santri) {
+            santri.totalDipanggil += 1;
+            santri.masukAntrianHariIni = false;
+            if(santri.statusHariIni === "Belum") {
+                santri.statusHariIni = "H";
+            }
+            saveToDB(santri);
+        }
+        hasilAcakHariIni = hasilAcakHariIni.filter(s => s.nama !== nama);
+        localStorage.setItem("hasil_acak_hari_ini", JSON.stringify(hasilAcakHariIni));
+        renderSection3();
+        renderSection2();
+    }
+
+    function tidakPanggilSantri(nama) {
+        const santri = daftarSantri.find(s => s.nama === nama);
+        if (santri) {
+            const alasan = prompt(`Santri ${nama} tidak hadir saat dipanggil.\nKetik 'A' untuk Alpha atau 'IS' untuk Izin/Sakit:`, "A");
+            
+            if (alasan && alasan.trim().toUpperCase() === "A") {
+                santri.totalAlpha += 1;
+                santri.statusHariIni = "A";
+                santri.masukAntrianHariIni = false;
+            } else if (alasan && alasan.trim().toUpperCase() === "IS") {
+                santri.statusHariIni = "IS";
+                santri.masukAntrianHariIni = false;
+            } else {
+                santri.masukAntrianHariIni = true;
+            }
+            saveToDB(santri);
+        }
+        hasilAcakHariIni = hasilAcakHariIni.filter(s => s.nama !== nama);
+        localStorage.setItem("hasil_acak_hari_ini", JSON.stringify(hasilAcakHariIni));
+        renderSection3();
+        renderSection2();
+    }
+
+    // --- EKSPOR & IMPOR ---
+    function eksporData() {
+        if (daftarSantri.length === 0) {
+            alert("Tidak ada data untuk diekspor!");
+            return;
+        }
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(daftarSantri));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `backup_absensi_santri_${new Date().toISOString().slice(0,10)}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
+    function picuImporData() {
+        document.getElementById('fileImpor').value = "";
+        document.getElementById('fileImpor').click();
+    }
+
+    function imporData(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const dataDiimpor = JSON.parse(e.target.result);
+                if (!Array.isArray(dataDiimpor)) throw new Error("Format berkas tidak valid.");
+
+                if (confirm(`Impor ${dataDiimpor.length} data santri?`)) {
+                    const transaction = db.transaction(["santri"], "readwrite");
+                    const store = transaction.objectStore("santri");
+                    
+                    let sisa = dataDiimpor.length;
+                    dataDiimpor.forEach(santri => {
+                        if(santri.nama && santri.alamat) {
+                            store.put(santri);
+                        }
+                        sisa--;
+                        if(sisa === 0) {
+                            alert("Data berhasil diimpor!");
+                            loadData();
+                        }
+                    });
+                }
+            } catch (err) {
+                alert("Gagal impor! " + err.message);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // --- VISUAL RENDERING ---
+    function renderAll() {
+        renderSection2();
+        renderSection3();
+        renderSection4();
+    }
+
+    function renderSection2() {
+        const tbody = document.querySelector("#tabelAbsensi tbody");
+        tbody.innerHTML = "";
+
+        const urutAlamat = [...daftarSantri].sort((a, b) => a.alamat.localeCompare(b.alamat));
+
+        urutAlamat.forEach(santri => {
+            const tr = document.createElement("tr");
+            const sudahAbsen = santri.statusHariIni !== "Belum";
+            const isH = santri.statusHariIni === 'H' ? 'active-h' : '';
+            const isA = santri.statusHariIni === 'A' ? 'active-a' : '';
+            const isIS = santri.statusHariIni === 'IS' ? 'active-is' : '';
+
+            tr.innerHTML = `
+                <td>
+                    <div class="santri-name" style="${sudahAbsen ? 'color: var(--text-secondary); font-style: italic;' : ''}">${santri.nama}</div>
+                    <div class="santri-address">${santri.alamat}</div>
+                </td>
+                <td>
+                    <div class="presence-actions">
+                        <button class="chip-btn ${isH}" ${sudahAbsen ? 'disabled' : ''} onclick="setKehadiran('${santri.nama}', 'H')">H</button>
+                        <button class="chip-btn ${isA}" ${sudahAbsen ? 'disabled' : ''} onclick="setKehadiran('${santri.nama}', 'A')">A</button>
+                        <button class="chip-btn ${isIS}" ${sudahAbsen ? 'disabled' : ''} onclick="setKehadiran('${santri.nama}', 'IS')">I/S</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderSection3() {
+        const container = document.getElementById("hasilAcak");
+        container.innerHTML = "";
+
+        if (hasilAcakHariIni.length === 0) {
+            container.innerHTML = "<p style='color:var(--text-secondary); text-align:center; font-size:13px; font-style:italic; margin: 10px 0;'>Belum dilakukan pengacakan aktif.</p>";
+            return;
+        }
+
+        hasilAcakHariIni.forEach(itemTeracak => {
+            const santriTerbaru = daftarSantri.find(s => s.nama === itemTeracak.nama) || itemTeracak;
+            
+            const div = document.createElement("div");
+            div.className = "list-item-card";
+            div.innerHTML = `
+                <div class="list-item-info">
+                    <strong style="font-size:16px;">${santriTerbaru.nama}</strong>
+                    <span>Asal: ${santriTerbaru.alamat} • Total Panggilan: ${santriTerbaru.totalDipanggil}x</span>
+                </div>
+                <div class="action-mini-group">
+                    <button class="btn-mini btn-mini-tidak" onclick="tidakPanggilSantri('${santriTerbaru.nama}')">Tidak</button>
+                    <button class="btn-mini btn-mini-panggil" onclick="panggilSantri('${santriTerbaru.nama}')">Panggil</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function renderSection4() {
+        const listAlpha = document.getElementById("listAlphaHariIni");
+        listAlpha.innerHTML = "";
+        
+        const alphaHariIni = daftarSantri.filter(s => s.statusHariIni === 'A');
+        if (alphaHariIni.length === 0) {
+            listAlpha.innerHTML = "<li style='color:var(--text-secondary); list-style:none; margin-left:-20px;'><small>Tidak ada riwayat alpha hari ini.</small></li>";
+        } else {
+            alphaHariIni.forEach(s => {
+                const li = document.createElement("li");
+                li.innerHTML = `<strong>${s.nama}</strong> <span style="color:var(--text-secondary)">(${s.alamat})</span>`;
+                listAlpha.appendChild(li);
+            });
+        }
+
+        const tbodyStat = document.querySelector("#tabelStatistik tbody");
+        tbodyStat.innerHTML = "";
+
+        let maxPanggilan = 0;
+        daftarSantri.forEach(s => {
+            if (s.totalDipanggil > maxPanggilan) {
+                maxPanggilan = s.totalDipanggil;
+            }
+        });
+
+        daftarSantri.forEach(santri => {
+            const tr = document.createElement("tr");
+            
+            // Angka 0 diset hitam amoled murni murni agar tidak menonjol/tersembunyi
+            let warnaAlpha = "color: var(--black-amoled);"; 
+            if (santri.totalAlpha > 0) {
+                warnaAlpha = "color: var(--text-white-bright);"; 
+            }
+
+            let warnaPanggil = "color: var(--black-amoled);";
+            if (santri.totalDipanggil > 0) {
+                if (santri.totalDipanggil === maxPanggilan) {
+                    warnaPanggil = "color: var(--color-a);"; 
+                } else {
+                    warnaPanggil = "color: var(--text-white-bright);"; 
+                }
+            }
+
+            tr.innerHTML = `
+                <td>
+                    <div class="santri-name">${santri.nama}</div>
+                    <div class="santri-address">${santri.alamat}</div>
+                </td>
+                <td style="text-align:center; font-weight:700; ${warnaAlpha}">${santri.totalAlpha}</td>
+                <td style="text-align:center; font-weight:700; ${warnaPanggil}">${santri.totalDipanggil}</td>
+            `;
+            tbodyStat.appendChild(tr);
+        });
+    }
+</script>
+
+</body>
+</html>
